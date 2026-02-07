@@ -16,7 +16,7 @@ pi extension/package for managing **ralph** loops from inside the pi TUI.
 ### From npm
 
 ```bash
-pi install npm:@robot-dev/pi-ralph
+pi install npm:@rhobot-dev/pi-ralph
 ```
 
 ### Local (for development)
