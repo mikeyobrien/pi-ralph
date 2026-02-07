@@ -1,0 +1,64 @@
+name: publish
+
+on:
+  # Recommended: publish from an annotated tag matching v<package.json version>
+  push:
+    tags:
+      - "v*"
+
+  # Optional: manual publish (useful for testing the workflow)
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write # required for npm Trusted Publishing (OIDC) + provenance
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Ensure modern npm (OIDC requires recent npm)
+        run: |
+          npm --version
+          npm i -g npm@latest
+          npm --version
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Validate tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "tag=$TAG_VERSION package=$PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)" >&2
+            exit 1
+          fi
+
+      - name: Dry-run pack
+        run: npm pack --dry-run
+
+      # Modern path: npm Trusted Publishing (OIDC). No token required.
+      - name: Publish to npm (trusted publishing)
+        if: ${{ secrets.NPM_TOKEN == '' }}
+        run: npm publish --provenance --access public
+
+      # Fallback path: token-based publishing.
+      - name: Publish to npm (token)
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public

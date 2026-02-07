@@ -1,0 +1,31 @@
+{
+  "name": "@robot-dev/pi-ralph",
+  "version": "0.1.0",
+  "description": "pi extension/package to manage ralph loops from within the pi TUI",
+  "keywords": ["pi-package", "ralph", "pi", "tui"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeyobrien/pi-ralph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mikeyobrien/pi-ralph/issues"
+  },
+  "homepage": "https://github.com/mikeyobrien/pi-ralph#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["*.ts", "README.md", "LICENSE"],
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {
+    "pi-interactive-shell": "^0.7.1"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*",
+    "@mariozechner/pi-tui": "*",
+    "@mariozechner/pi-ai": "*",
+    "@sinclair/typebox": "*"
+  }
+}
