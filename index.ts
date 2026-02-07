@@ -82,7 +82,7 @@ export default function piRalphExtension(pi: ExtensionAPI) {
       // Only start timers and UI-driven state in interactive mode.
       if (ctx.hasUI) {
         // UX: keep loop status responsive for the TUI.
-        loopManager.startPolling(1000);
+        loopManager.startPolling(10000);
 
         // Step 3: widget below editor
         const ensureWidget = () => {
@@ -166,7 +166,7 @@ export default function piRalphExtension(pi: ExtensionAPI) {
       if (!loopManager) {
         loopManager = new LoopManager(pi);
         // UX: keep loop status responsive for the TUI.
-        loopManager.startPolling(1000);
+        loopManager.startPolling(10000);
       }
 
       const focused = loopManager.getFocused();
@@ -192,7 +192,7 @@ export default function piRalphExtension(pi: ExtensionAPI) {
             );
           }, {
             overlay: true,
-            overlayOptions: { width: "95%", maxHeight: "80%", anchor: "center", margin: 1 },
+            overlayOptions: { width: "60%", maxHeight: "60%", anchor: "center", margin: 1 },
           });
         };
 
@@ -200,8 +200,8 @@ export default function piRalphExtension(pi: ExtensionAPI) {
       }, {
         overlay: true,
         overlayOptions: {
-          width: "92%",
-          maxHeight: "90%",
+          width: "60%",
+          maxHeight: "60%",
           anchor: "center",
           margin: 1,
         },

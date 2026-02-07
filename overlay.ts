@@ -7,11 +7,11 @@ import { join } from "node:path";
 
 import type { LoopManager, TrackedLoop } from "./loop-manager";
 
-const OVERLAY_WIDTH_PERCENT = 92;
-const OVERLAY_HEIGHT_PERCENT = 90;
+const OVERLAY_WIDTH_PERCENT = 60;
+const OVERLAY_HEIGHT_PERCENT = 60;
 
-const CHROME_TOP = 3; // border + header + border
-const CHROME_BOTTOM = 3; // border + footer + border
+const CHROME_TOP = 4; // top border + header + hint + divider
+const CHROME_BOTTOM = 3; // divider + footer + bottom border
 
 function padRight(s: string, w: number): string {
   const vis = visibleWidth(s);
@@ -69,6 +69,7 @@ export class RalphOverlay implements Component, Focusable {
   private activeLoopId: string | null = null;
   private session: PtyTerminalSession | null = null;
   private sessionEphemeral = false; // true for log-follow sessions
+  private toolDataUnsub: (() => void) | null = null;
 
   private view: ViewMode = "pty";
   private textViewTitle: string | null = null;
@@ -114,6 +115,8 @@ export class RalphOverlay implements Component, Focusable {
   }
 
   private disposeSessionIfEphemeral(): void {
+    this.toolDataUnsub?.();
+    this.toolDataUnsub = null;
     if (this.session && this.sessionEphemeral) {
       this.session.dispose();
     }
@@ -142,6 +145,9 @@ export class RalphOverlay implements Component, Focusable {
       this.session = focused.ptySession as PtyTerminalSession;
       this.sessionEphemeral = false;
       this.session.resize(cols, termRows);
+      // Ensure PTY output triggers re-renders in the overlay.
+      this.toolDataUnsub?.();
+      this.toolDataUnsub = this.session.addDataListener(() => this.tui.requestRender());
       return;
     }
 
@@ -475,7 +481,7 @@ export class RalphOverlay implements Component, Focusable {
     } else if (this.session?.isScrolledUp()) {
       lines.push(row(dim("Scrolled up (Shift+Down to follow)")));
     } else {
-      lines.push(row(dim("")));
+      lines.push(row(dim(truncateToWidth("q quit loop  Esc detach  /ralph reattach  Shift+Up/Down scroll", innerWidth, "..."))));
     }
 
     lines.push(border("╰" + "─".repeat(width - 2) + "╯"));
