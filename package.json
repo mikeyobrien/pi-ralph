@@ -15,7 +15,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["*.ts", "README.md", "LICENSE"],
+  "files": ["*.ts", "README.md", "LICENSE", "screenshot.jpg"],
   "pi": {
     "extensions": ["./index.ts"]
   },

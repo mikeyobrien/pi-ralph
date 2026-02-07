@@ -2,6 +2,8 @@
 
 pi extension/package for managing **ralph** loops from inside the pi TUI.
 
+![pi-ralph overlay showing a ralph loop running inside pi](screenshot.jpg)
+
 - Status widget below the editor when loops exist
 - `/ralph` overlay to inspect loops, follow logs, and run common loop actions
 - `ralph_loop(...)` LLM tool to start loops in a PTY (so the native ralph TUI can be embedded)
