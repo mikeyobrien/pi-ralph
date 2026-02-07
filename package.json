@@ -1,6 +1,6 @@
 {
   "name": "@rhobot-dev/pi-ralph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "pi extension/package to manage ralph loops from within the pi TUI",
   "keywords": ["pi-package", "ralph", "pi", "tui"],
   "license": "MIT",
