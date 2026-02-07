@@ -1,12 +1,9 @@
 name: publish
 
 on:
-  # Recommended: publish from an annotated tag matching v<package.json version>
   push:
     tags:
       - "v*"
-
-  # Optional: manual publish (useful for testing the workflow)
   workflow_dispatch: {}
 
 jobs:
@@ -15,7 +12,7 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write # required for npm Trusted Publishing (OIDC) + provenance
+      id-token: write
 
     steps:
       - name: Checkout
@@ -26,13 +23,6 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org
-          cache: npm
-
-      - name: Ensure modern npm (OIDC requires recent npm)
-        run: |
-          npm --version
-          npm i -g npm@latest
-          npm --version
 
       - name: Install deps
         run: npm ci
@@ -51,14 +41,7 @@ jobs:
       - name: Dry-run pack
         run: npm pack --dry-run
 
-      # Modern path: npm Trusted Publishing (OIDC). No token required.
-      - name: Publish to npm (trusted publishing)
-        if: ${{ secrets.NPM_TOKEN == '' }}
-        run: npm publish --provenance --access public
-
-      # Fallback path: token-based publishing.
-      - name: Publish to npm (token)
-        if: ${{ secrets.NPM_TOKEN != '' }}
+      - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public
