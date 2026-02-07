@@ -81,7 +81,8 @@ export default function piRalphExtension(pi: ExtensionAPI) {
 
       // Only start timers and UI-driven state in interactive mode.
       if (ctx.hasUI) {
-        loopManager.startPolling(5000);
+        // UX: keep loop status responsive for the TUI.
+        loopManager.startPolling(1000);
 
         // Step 3: widget below editor
         const ensureWidget = () => {
@@ -164,7 +165,8 @@ export default function piRalphExtension(pi: ExtensionAPI) {
       // Ensure LoopManager exists (interactive mode only)
       if (!loopManager) {
         loopManager = new LoopManager(pi);
-        loopManager.startPolling(5000);
+        // UX: keep loop status responsive for the TUI.
+        loopManager.startPolling(1000);
       }
 
       const focused = loopManager.getFocused();
